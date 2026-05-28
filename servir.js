@@ -6,6 +6,18 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// =====================
+// ROUTES
+// =====================
+
+app.get("/", (req, res) => {
+  res.json({
+    status: "NEXUS backend online",
+    message: "Servidor funcionando correctamente"
+  });
+});
+
 app.get("/status", (req, res) => {
   res.json({
     system: "NEXUS",
@@ -13,13 +25,17 @@ app.get("/status", (req, res) => {
     message: "Servidor funcionando correctamente",
     time: new Date().toISOString()
   });
-});app.get("/health", (req, res) => {
+});
+
+app.get("/health", (req, res) => {
   res.json({
     ok: true,
     uptime: process.uptime(),
     memory: process.memoryUsage()
   });
-});app.post("/nexus", (req, res) => {
+});
+
+app.post("/nexus", (req, res) => {
   const input = req.body.input;
 
   if (!input) {
@@ -34,12 +50,10 @@ app.get("/status", (req, res) => {
     status: "processing"
   });
 });
-app.get("/", (req, res) => {
-  res.json({
-    status: "NEXUS backend online",
-    message: "Servidor funcionando correctamente"
-  });
-});
+
+// =====================
+// START SERVER
+// =====================
 
 const PORT = process.env.PORT || 10000;
 
