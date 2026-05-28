@@ -34,8 +34,49 @@ app.get("/health", (req, res) => {
     memory: process.memoryUsage()
   });
 });
-
 app.post("/nexus", (req, res) => {
+  const input = req.body.input;
+
+  if (!input) {
+    return res.json({
+      error: "No input provided"
+    });
+  }
+
+  const text = input.toLowerCase();
+
+  let response = "";
+  let type = "unknown";
+
+  // 🧠 lógica básica tipo "cerebro"
+  if (text.includes("hola") || text.includes("hi")) {
+    response = "Hola 👋 soy NEXUS. ¿En qué te ayudo?";
+    type = "greeting";
+  } 
+  else if (text.includes("qué eres") || text.includes("quien eres")) {
+    response = "Soy NEXUS, un sistema backend en evolución.";
+    type = "identity";
+  } 
+  else if (text.includes("status")) {
+    response = "El sistema está operativo y funcionando correctamente.";
+    type = "status";
+  } 
+  else if (text.includes("ayuda")) {
+    response = "Puedo responder mensajes básicos y evolucionar a IA completa.";
+    type = "help";
+  } 
+  else {
+    response = `Procesé tu mensaje: "${input}"`;
+    type = "default";
+  }
+
+  res.json({
+    input: input,
+    response: response,
+    type: type,
+    status: "processed"
+  });
+});
   const input = req.body.input;
 
   if (!input) {
