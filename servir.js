@@ -5,16 +5,16 @@ const cors = require("cors");
 
 const app = express();
 
-// ======================
+// =============================
 // CONFIGURACIÓN
-// ======================
+// =============================
 
 app.use(cors());
 app.use(express.json());
 
-// ======================
+// =============================
 // RUTA PRINCIPAL
-// ======================
+// =============================
 
 app.get("/", (req, res) => {
   res.json({
@@ -25,9 +25,9 @@ app.get("/", (req, res) => {
   });
 });
 
-// ======================
+// =============================
 // STATUS DEL SISTEMA
-// ======================
+// =============================
 
 app.get("/status", (req, res) => {
   res.json({
@@ -37,53 +37,62 @@ app.get("/status", (req, res) => {
   });
 });
 
-// ======================
+// =============================
 // IA NEXUS
-// ======================
+// =============================
 
 app.post("/nexus", async (req, res) => {
+
   try {
+
     const message = req.body.message;
+
+    // Validación
 
     if (!message) {
       return res.status(400).json({
+        success: false,
         error: "Falta el mensaje"
       });
     }
 
-    // RESPUESTA TEMPORAL DE IA
-    // Después conectamos OpenAI real
+    // RESPUESTA TEMPORAL
 
     res.json({
       success: true,
-      user: message,
-      reply: `NEXUS recibió tu mensaje: ${message}`,
+      system: "NEXUS",
+      user_message: message,
+      reply: `NEXUS recibió: ${message}`,
       timestamp: new Date().toISOString()
     });
 
   } catch (error) {
+
     console.error(error);
 
     res.status(500).json({
       success: false,
       error: "Error interno del servidor"
     });
+
   }
+
 });
 
-// ======================
+// =============================
 // RUTA NO ENCONTRADA
-// ======================
+// =============================
 
 app.use((req, res) => {
   res.status(404).json({
+    success: false,
     error: "Ruta no encontrada"
   });
 });
 
-// ======================
+// =============================
 // INICIAR SERVIDOR
-// ======================
+// =============================
 
 const PORT = process.env.PORT || 10000;
 
