@@ -6,48 +6,74 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+/* =========================
+   RUTA PRINCIPAL
+========================= */
 app.get("/", (req, res) => {
   res.json({
     status: "NEXUS backend online"
   });
-});app.get("/status", (req, res) => {
+});
+
+/* =========================
+   STATUS
+========================= */
+app.get("/status", (req, res) => {
   res.json({
     system: "NEXUS",
     status: "online",
     time: new Date().toISOString()
   });
-});app.post("/nexus", (req, res) => {
-  const input = req.body.input;
+});
 
-  if (!input) {
-    return res.json({ error: "No input provided" });
+/* =========================
+   IA NEXUS
+========================= */
+app.post("/nexus", (req, res) => {
+  const userMessage = req.body.message;
+
+  if (!userMessage) {
+    return res.status(400).json({
+      error: "Falta el mensaje"
+    });
   }
 
-  const text = input.toLowerCase();
-
-  let response = "";
-  let type = "unknown";
-
-  if (text.includes("hola")) {
-    response = "Hola 👋 soy NEXUS";
-    type = "greeting";
-  } 
-  else if (text.includes("quien eres")) {
-    response = "Soy NEXUS, tu IA backend";
-    type = "identity";
-  } 
-  else {
-    response = `Procesé: "${input}"`;
-    type = "default";
-  }
+  const response = generarRespuestaIA(userMessage);
 
   res.json({
-    input,
-    response,
-    type,
+    system: "NEXUS-IA",
+    input: userMessage,
+    response: response,
     status: "processed"
   });
-});const PORT = process.env.PORT || 10000;
+});
+
+/* =========================
+   FUNCIÓN IA
+========================= */
+function generarRespuestaIA(texto) {
+  const msg = texto.toLowerCase();
+
+  if (msg.includes("hola")) {
+    return "Hola 👋 soy NEXUS, tu asistente.";
+  }
+
+  if (msg.includes("como estas")) {
+    return "Estoy funcionando correctamente ⚡";
+  }
+
+  if (msg.includes("que eres")) {
+    return "Soy una IA básica creada en Node.js.";
+  }
+
+  return "No entiendo aún esa pregunta, pero estoy aprendiendo 🤖";
+}
+
+/* =========================
+   SERVIDOR
+========================= */
+const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
