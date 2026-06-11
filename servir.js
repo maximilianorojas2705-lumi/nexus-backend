@@ -82,7 +82,15 @@ app.post("/nexus", async (req, res) => {
 // =============================
 // RUTA NO ENCONTRADA
 // =============================
+app.post("/ia", (req, res) => {
 
+  const mensaje = req.body.mensaje;
+
+  res.json({
+    respuesta: "NEXUS recibió: " + mensaje
+  });
+
+});
 app.use((req, res) => {
   res.status(404).json({
     success: false,
