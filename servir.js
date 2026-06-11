@@ -1,69 +1,62 @@
-require("dotenv").config();
-
 const express = require("express");
 const cors = require("cors");
+const dotenv = require("dotenv");
+const OpenAI = require("openai");
+
+dotenv.config();
 
 const app = express();
-
-// =============================
-// CONFIGURACIÓN
-// =============================
 
 app.use(cors());
 app.use(express.json());
 
-// =============================
-// RUTA PRINCIPAL
-// =============================
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 app.get("/", (req, res) => {
   res.json({
-    system: "NEXUS",
-    status: "online",
-    message: "Servidor funcionando correctamente",
-    time: new Date().toISOString()
+    name: "NEXUS",
+    status: "online"
   });
 });
-
-// =============================
-// STATUS DEL SISTEMA
-// =============================
 
 app.get("/status", (req, res) => {
   res.json({
-    ok: true,
-    uptime: process.uptime(),
-    memory: process.memoryUsage()
+    system: "NEXUS",
+    status: "online",
+    time: new Date()
   });
 });
 
-// =============================
-// IA NEXUS
-// =============================
-
 app.post("/nexus", async (req, res) => {
-
   try {
 
-    const message = req.body.message;
-
-    // Validación
+    const { message } = req.body;
 
     if (!message) {
       return res.status(400).json({
-        success: false,
         error: "Falta el mensaje"
       });
     }
 
-    // RESPUESTA TEMPORAL
+    const response = await openai.chat.completions.create({
+      model: "gpt-4.1-mini",
+      messages: [
+        {
+          role: "system",
+          content: "Eres NEXUS, una IA avanzada."
+        },
+        {
+          role: "user",
+          content: message
+        }
+      ]
+    });
 
     res.json({
       success: true,
-      system: "NEXUS",
-      user_message: message,
-      reply: `NEXUS recibió: ${message}`,
-      timestamp: new Date().toISOString()
+      reply: response.choices[0].message.content
     });
 
   } catch (error) {
@@ -72,38 +65,14 @@ app.post("/nexus", async (req, res) => {
 
     res.status(500).json({
       success: false,
-      error: "Error interno del servidor"
+      error: error.message
     });
 
   }
-
 });
 
-// =============================
-// RUTA NO ENCONTRADA
-// =============================
-app.post("/ia", (req, res) => {
-
-  const mensaje = req.body.mensaje;
-
-  res.json({
-    respuesta: "NEXUS recibió: " + mensaje
-  });
-
-});
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    error: "Ruta no encontrada"
-  });
-});
-
-// =============================
-// INICIAR SERVIDOR
-// =============================
-
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`🚀 NEXUS online en puerto ${PORT}`);
+  console.log(`NEXUS ejecutándose en puerto ${PORT}`);
 });
