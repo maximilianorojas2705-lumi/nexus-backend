@@ -2,9 +2,9 @@
   "name": "nexus-backend",
   "version": "1.0.0",
   "description": "NEXUS Backend",
-  "main": "server.js",
+  "main": "servir.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node servir.js",
     "build": "echo Build completed"
   },
   "dependencies": {
