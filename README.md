@@ -1,4 +1,8 @@
 # Nexus Backend - Advanced Backend API
+## Estado
+
+*2026-09-08* – Proyecto de backend para la plataforma Nexus, expone APIs REST para gestión de usuarios y datos.
+
 
 A production-ready, scalable backend API built with **Node.js**, **Express**, **TypeScript**, and **MongoDB**.
 
